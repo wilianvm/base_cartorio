@@ -1,0 +1,253 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from unidecode import unidecode
+
+df = pd.read_excel("teste2.xlsx")
+qtd_linhas, qtd_colunas = df.shape
+
+print("Quantidade de Linhas : ", qtd_linhas)
+print("Quantidade de Colunas : ", qtd_colunas)
+
+# Remoção das colunas 
+df = df.drop(["l2_letra"],axis=1)
+
+# convertendo para numero
+df["l2_numero"] =  pd.to_numeric(df['l2_numero'], errors='coerce')
+df["l2_lote"] =  pd.to_numeric(df['l2_lote'], errors='coerce')
+df["l2_quadra"] =  pd.to_numeric(df['l2_quadra'], errors='coerce')
+
+# convertendo os tipos
+df['L2_Id'] = df['L2_Id'].astype(int)
+df['l2_matricula'] = df['l2_matricula'].astype(int)
+
+df['L2_TipoImovel'] = df['L2_TipoImovel'].astype('category')
+df['l2_imovel'] = df['l2_imovel'].astype('category')
+df['L2_Via'] = df['L2_Via'].astype('category')
+df['L2_Bairro'] = df['L2_Bairro'].astype('category')
+df['L2_Cidade'] = df['L2_Cidade'].astype('category')
+df['L2_Estado'] = df['L2_Estado'].astype('category')
+df['L2_Localizacao'] = df['L2_Localizacao'].astype('category')
+
+# Ajuste da coluna endereço
+df['L2_Endereco'] = df['L2_Endereco'].str.strip()  
+df['L2_Endereco'] = df['L2_Endereco'].str.title()  
+
+# Deixando tudo em minusculo
+df['L2_TipoImovel'] = df['L2_TipoImovel'].astype(str).str.lower()
+df['L2_TipoImovel'] = df['L2_TipoImovel'].astype('category')
+df['L2_TipoImovel'] = df['L2_TipoImovel'].astype(str).apply(unidecode)
+
+df['l2_imovel'] = df['l2_imovel'].astype(str).str.lower()
+df['l2_imovel'] = df['l2_imovel'].astype('category')
+df['l2_imovel'] = df['l2_imovel'].astype(str).apply(unidecode)
+
+df['L2_Via'] = df['L2_Via'].astype(str).str.lower()
+df['L2_Via'] = df['L2_Via'].astype('category')
+df['L2_Via'] = df['L2_Via'].astype(str).apply(unidecode)
+
+df['L2_Bairro'] = df['L2_Bairro'].astype(str).str.lower()
+df['L2_Bairro'] = df['L2_Bairro'].astype('category')
+df['L2_Bairro'] = df['L2_Bairro'].astype(str).apply(unidecode)
+
+df['L2_Cidade'] = df['L2_Cidade'].astype(str).str.lower()
+df['L2_Cidade'] = df['L2_Cidade'].astype('category')
+df['L2_Cidade'] = df['L2_Cidade'].astype(str).apply(unidecode)
+
+df['L2_Estado'] = df['L2_Estado'].astype(str).str.lower()
+df['L2_Estado'] = df['L2_Estado'].astype('category')
+df['L2_Estado'] = df['L2_Estado'].astype(str).apply(unidecode)
+
+df['L2_Localizacao'] = df['L2_Localizacao'].astype(str).str.lower()
+df['L2_Localizacao'] = df['L2_Localizacao'].astype('category')
+df['L2_Localizacao'] = df['L2_Localizacao'].astype(str).apply(unidecode)
+
+############################## Analise Descritiva ##############################
+
+# L2_TipoImovel -> Urbano ou Rural
+# L2_imovel -> Residencial, comercial, terreno, fazenda/sitio/chacara, casa. 
+# L2_Via
+
+# L2_TipoImovel ###############################################################
+
+fa_tipo_imovel = df["L2_TipoImovel"].value_counts()
+fr_tipo_imovel = 100*df["L2_TipoImovel"].value_counts()/sum(df["L2_TipoImovel"].value_counts())
+
+print("Frequencia Absoluta : ",fa_tipo_imovel)
+print("Frequencia Relativa : ",fr_tipo_imovel)
+
+
+# Pie Chart
+plt.figure(figsize=(10, 7))
+plt.subplot(1,2,1)
+
+sns.barplot(x=fr_tipo_imovel.index, y=fr_tipo_imovel.values)
+plt.title('Tipo do Imovel')
+plt.ylabel('Frequencia relativa (%)')
+plt.xticks(rotation=45)  
+
+
+plt.subplot(1,2,2)
+plt.pie(fr_tipo_imovel, labels=fr_tipo_imovel.index, 
+        autopct='%1.1f%%', startangle=140)
+plt.title('Porporção (Tipo do Imovel)')
+
+plt.show()
+
+
+
+# L2_imovel ###################################################################
+fa_imovel = df["l2_imovel"].value_counts()
+fr_imovel = 100*df["l2_imovel"].value_counts()/sum(df["l2_imovel"].value_counts())
+
+
+print("Frequencia Absoluta : ", fa_imovel)
+print("Frequencia relativa : ", round(fr_imovel,4))
+
+
+# Pie Chart
+plt.figure(figsize=(10, 7))
+plt.subplot(1,2,1)
+
+sns.barplot(x=fa_imovel.index, y=fa_imovel.values)
+plt.title('Imovel')
+plt.ylabel('Frequencia relativa (%)')
+plt.xticks(rotation=45)  
+
+
+plt.subplot(1,2,2)
+plt.pie(fr_imovel, labels=fr_imovel.index, 
+        autopct='%1.1f%%', startangle=140)
+plt.title('Porporção - Imovel')
+
+plt.show()
+
+
+
+
+
+
+
+# L2_Via ######################################################################
+
+fa_via = df["L2_Via"].value_counts()
+fr_via = 100*df["L2_Via"].value_counts()/sum(df["L2_Via"].value_counts())
+
+print("Frequencia Absoluta : ", fa_via)
+print("Frequencia relativa : ", round(fr_via,4))
+
+plt.figure(figsize=(10, 7))
+plt.subplot(1,2,1)
+
+sns.barplot(x=fa_via.index, y=fa_via.values)
+plt.title('Tipo de Via')
+plt.ylabel('Frequencia relativa (%)')
+plt.xticks(rotation=45)  
+
+
+plt.subplot(1,2,2)
+plt.pie(fr_via, labels=fr_via.index, 
+        autopct='%1.1f%%', startangle=140)
+plt.title('Porporção - Via')
+
+plt.show()
+
+
+
+
+
+
+# L2_Bairro ###################################################################
+
+fa_bairro = df["L2_Bairro"].value_counts()
+fr_bairro = 100*df["L2_Bairro"].value_counts()/sum(df["L2_Bairro"].value_counts())
+
+print("Frequencia Absoluta : ", fa_bairro)
+print("Frequencia relativa : ", round(fr_bairro,4))
+
+
+plt.figure(figsize=(10, 7))
+plt.subplot(1,2,1)
+
+sns.barplot(x=fa_bairro.index, y=fa_bairro.values)
+plt.title('Bairro')
+plt.ylabel('Frequencia relativa (%)')
+plt.xticks(rotation=45)  
+
+
+plt.subplot(1,2,2)
+wedges, texts, autotexts = plt.pie(fr_bairro, labels=fr_bairro.index, 
+                                   autopct='%1.0f%%', startangle=270)
+plt.title('Proporção - Bairros')
+
+# Attempt to rotate pie chart labels manually (alignment relative to slices)
+for text, autotext in zip(texts, autotexts):
+    rotation = (text.get_rotation() - 335) % 360  # Adjust rotation here if needed
+    text.set_rotation(rotation)
+    # Optional: Adjust alignment based on the angle
+    ha = 'right' if rotation > 180 else 'left'
+    text.set_horizontalalignment(ha)
+
+
+plt.show()
+
+
+
+
+
+
+
+
+# L2_Cidade ###################################################################
+
+fa_cidade = df["L2_Cidade"].value_counts()
+fr_cidade = 100*df["L2_Cidade"].value_counts()/sum(df["L2_Cidade"].value_counts())
+
+print("Frequencia Absoluta : ", fa_cidade)
+print("Frequencia relativa : ", round(fr_cidade,4))
+
+
+plt.figure(figsize=(10, 7))
+plt.subplot(1,2,1)
+
+sns.barplot(x=fa_cidade.index, y=fa_cidade.values)
+plt.title('Cidade')
+plt.ylabel('Frequencia relativa (%)')
+plt.xticks(rotation=45)  
+
+
+plt.subplot(1,2,2)
+wedges, texts, autotexts = plt.pie(fr_cidade, labels=fr_cidade.index, 
+                                   autopct='%1.0f%%', startangle=270)
+plt.title('Proporção - Bairros')
+
+# Attempt to rotate pie chart labels manually (alignment relative to slices)
+for text, autotext in zip(texts, autotexts):
+    rotation = (text.get_rotation() - 335) % 360  # Adjust rotation here if needed
+    text.set_rotation(rotation)
+    # Optional: Adjust alignment based on the angle
+    ha = 'right' if rotation > 180 else 'left'
+    text.set_horizontalalignment(ha)
+
+
+plt.show()
+
+
+agrupado1  = df.groupby(["L2_TipoImovel", "l2_imovel"])["l2_imovel"].value_counts()/sum(df.groupby(["L2_TipoImovel", "l2_imovel"])["l2_imovel"].value_counts())*100
+agrupado2  = df.groupby(["L2_Cidade", "L2_TipoImovel"])["L2_Cidade"].value_counts()/sum(df.groupby(["L2_TipoImovel", "l2_imovel"])["l2_imovel"].value_counts())*100
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
